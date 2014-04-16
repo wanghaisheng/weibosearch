@@ -12,7 +12,7 @@ class ScrapyWeiboPipeline(object):
     self.dbpool = adbapi.ConnectionPool('MySQLdb',
       db='weibosearch2',
       user='root',
-      passwd='pw',
+      passwd='123456',
       cursorclass=MySQLdb.cursors.DictCursor,
       charset='utf8',
       use_unicode=True

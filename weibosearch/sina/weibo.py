@@ -12,6 +12,8 @@ import re, sys, json
 import binascii
 import rsa
 
+
+
 postdata = {
   'entry': 'weibo',
   'gateway': '1',
@@ -33,6 +35,10 @@ postdata = {
 }
 
 class Weibo():
+  enable_proxy = True
+  proxy_handler = urllib2.ProxyHandler({"http" : 'http://10.1.2.188:80'})
+  null_proxy_handler = urllib2.ProxyHandler({})
+
   def __init__(self):
     # 获取一个保存cookie的对象
     self.cj = cookielib.LWPCookieJar()
@@ -94,7 +100,8 @@ class Weibo():
 
     result = urllib2.urlopen(req)
     text = result.read()
-    p = re.compile('location\.replace\([\'|"](.*?)[\'|"]\)')
+#    p = re.compile('location\.replace\([\'|"](.*?)[\'|"]\)')
+    p = re.compile('location\.replace\(\'(.*?)\'\)')
     try:
       return p.search(text).group(1)
     except:

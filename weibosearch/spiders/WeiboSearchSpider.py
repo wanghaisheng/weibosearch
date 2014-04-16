@@ -1,6 +1,8 @@
 #coding=utf-8
 # weibosearch spider
 # tpeng <pengtaoo@gmail.com>
+#to-do lists 
+#mysql的访问 读取配置文件
 #
 import codecs
 from datetime import datetime, timedelta
@@ -10,7 +12,7 @@ from scrapy import log
 from scrapy.conf import settings
 from scrapy.exceptions import CloseSpider
 from scrapy.http import Request
-from scrapy.spider import BaseSpider
+from scrapy.spider import Spider
 from weibosearch.feeds import SearchPage
 from weibosearch.items import ScrapyWeiboItem
 import re, json
@@ -24,8 +26,9 @@ from weibosearch.timerange import daterange
 # default values
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
-
-class WeiboSearchSpider(BaseSpider):
+#修改scrapy版本变异
+#class WeiboSearchSpider(BaseSpider):
+class WeiboSearchSpider(Spider):
   name = 'weibosearch'
   allowed_domains = ['weibo.com']
   weibo = Weibo()
@@ -37,18 +40,21 @@ class WeiboSearchSpider(BaseSpider):
   def __init__(self, name=None, **kwargs):
     super(WeiboSearchSpider, self).__init__(name, **kwargs)
     if not self.savedb:
-        self.db = MySQLdb.connect(host="localhost", port=3306, user="root", passwd="pw", db="weibosearch2",
+#手动修改mysql端口      
+        self.db = MySQLdb.connect(host="localhost", port=3306, user="root", passwd="123456", db="weibosearch2",
           charset='utf8', use_unicode=True)
         self.cursor = self.db.cursor()
     self.logined = False
 
     self.log('login with %s' % self.username)
     login_url = self.weibo.login(self.username, self.password)
+    print '成功登录微博'
     if login_url:
       self.start_urls.append(login_url)
 
   # only parse the login page
   def parse(self, response):
+    print 'do parse function'
     if response.body.find('feedBackUrlCallBack') != -1:
       data = json.loads(re.search(r'feedBackUrlCallBack\((.*?)\)', response.body, re.I).group(1))
       userinfo = data.get('userinfo', '')

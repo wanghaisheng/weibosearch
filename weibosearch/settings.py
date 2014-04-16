@@ -21,9 +21,11 @@ QUEUE_KEY = '%(spider)s:requests'
 DUPEFILTER_KEY = '%(spider)s:dupefilter'
 SCHEDULER = "weibosearch.redis.scheduler.Scheduler"
 
-# pipelines config
-ITEM_PIPELINES = ['weibosearch.pipelines.ScrapyWeiboPipeline']
-
+# pipelines config  see more info from http://stackoverflow.com/questions/20881431/scrapy-item-pipelines-warning
+#ITEM_PIPELINES = ['weibosearch.pipelines.ScrapyWeiboPipeline']
+ITEM_PIPELINES = {
+    'weibosearch.pipelines.ScrapyWeiboPipeline': 500,
+}
 DOWNLOAD_DELAY = 10
 
 TIME_DELTA = 30
@@ -33,3 +35,8 @@ BOOTSTRAP = 'file'
 
 # how many feeds can fetch from a item
 FEED_LIMIT = 300000
+
+#set the company proxy
+DOWNLOADER_MIDDLEWARES = {
+    'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 750,
+}
